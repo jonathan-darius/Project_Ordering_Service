@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package user;
+option go_package="Mini_Product_Ordering_Service/UserServices";
+
+message User {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  string image = 4;
+  string phone_number = 5;
+  string about = 6;
+  int64 birthdate = 7;
+  string password = 8;
+  string role = 9;
+  int64 createdAt = 10;
+  bool validate = 11;
+}
+
+message UserId{
+  string id = 1;
+}
+
+message ValidateRequest{
+  string email = 1;
+  string token = 2;
+}
+
+message ValidateResponse{
+  bool status = 1;
+  string messages = 2;
+}
+
+message Pagination{
+  int32 page =1;
+  int32 recordPerPage = 2;
+}
+
+
+message LoginResponse {
+  string token = 1;
+  string refresh =2;
+}
+
+message LoginRequest{
+  string email=1;
+  string password=2;
+}
+
+message ValidateTokenRequest{
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  bool status = 1;
+  string messages = 2;
+  string userId = 3;
+  string role = 4;
+}
+
+message UserEmail{
+  string email=1;
+}
+
+message UploadImageRequest{
+  oneof data{
+    ImageInfo info = 1;
+    bytes chunk_data =2;
+  }
+}
+
+message ImageInfo{
+  string userId = 1;
+  string imageType =2;
+}
+
+service UserService{
+  rpc RegisterUser(User) returns (UserId);
+  rpc UpdateUser(User) returns (google.protobuf.Empty);
+  rpc DeleteUser(UserId) returns (google.protobuf.Empty);
+
+  rpc GetUserByID(UserId) returns (User);
+  rpc GetUserByEmail(UserEmail) returns (User);
+  rpc ListUser(Pagination) returns (stream User);
+
+  rpc GetVerification(UserEmail) returns(google.protobuf.Empty);
+  rpc VerificationUser(ValidateRequest) returns(google.protobuf.Empty);
+
+  rpc Login(LoginRequest) returns(LoginResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+
+  rpc UploadImage(stream UploadImageRequest) returns (google.protobuf.Empty){};
+}

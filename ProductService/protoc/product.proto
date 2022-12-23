@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package product;
+option go_package="Mini_Product_Ordering_Service/ProductService";
+
+message UploadImageRequest{
+  oneof data{
+    ImageInfo info = 1;
+    bytes chunk_data =2;
+  }
+}
+
+message ImageInfo{
+  string Id = 1;
+  string imageType =2;
+}
+
+message Product{
+  string id = 1;
+  string name = 2;
+  int64  price =3;
+  int32 stock = 4;
+  int32 sold = 5;
+  double rating = 6;
+  int32 rated =7;
+  string desc =8;
+  repeated string category=9;
+  repeated string image =10;
+  string createdBy =11;
+  int64 createdAt =12;
+  int64 updatedAt = 13;
+  bool deleted = 14;
+}
+
+message ProductId{
+  string id = 1;
+}
+
+message SearchQuery{
+  string keyword =1;
+  string category = 2;
+  int64 priceLow = 3;
+  int64 priceHigh = 4;
+  double rating = 5;
+  string sortBy =6;
+  string order = 7;
+  Pagination pagination =8;
+}
+
+message Pagination{
+  int32 page =1;
+  int32 recordPerPage = 2;
+}
+
+message Stock{
+  string id = 1;
+  int32 stock = 2;
+}
+
+message Rating{
+  string id = 1;
+  int32 totalRating = 2;
+  int32 totalItem =3;
+}
+
+message NumUpdate{
+  bool check = 1;
+  int64 value = 2;
+}
+
+message StrUpdate{
+  bool check =1;
+  string value =2;
+}
+
+message ArrUpdate{
+  bool check =1;
+  repeated string value = 2;
+}
+
+message UpdateProductMSG{
+  string id = 1;
+  StrUpdate name = 2;
+  NumUpdate  price =3;
+  NumUpdate stock = 4;
+  StrUpdate desc =5;
+  ArrUpdate category=6;
+  ArrUpdate image =7;
+}
+
+service ProductManagementService{
+  rpc RegisterProduct(Product) returns (ProductId);
+  rpc UpdateProduct(UpdateProductMSG) returns (google.protobuf.Empty);
+  rpc DeleteProduct(ProductId) returns (google.protobuf.Empty);
+
+  rpc AddStock(Stock)returns(google.protobuf.Empty);
+
+  rpc AddCategory(UpdateProductMSG) returns(google.protobuf.Empty);
+  rpc RemoveCatogory(UpdateProductMSG) returns(google.protobuf.Empty);
+
+  // ToDo Image Management Array
+  rpc UploadProductImage(stream UploadImageRequest) returns (google.protobuf.Empty){};
+}
+
+service OrderingService{
+  rpc SearchProduct(SearchQuery) returns(stream Product);
+
+  rpc DecreaseStock(Stock) returns (google.protobuf.Empty);
+  rpc AddSoldProduct(Stock) returns (google.protobuf.Empty);
+
+  rpc UpdateRating(Rating) returns (google.protobuf.Empty);
+
+  rpc GetProductByID(ProductId) returns(Product);
+  rpc GetAllProduct(Pagination) returns (stream Product);
+}

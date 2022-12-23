@@ -1,0 +1,4 @@
+syntax = "proto3";
+
+package user;
+option go_package="Mini_Product_Ordering_Service/UserServices";

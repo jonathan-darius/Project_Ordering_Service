@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package ordering;
+option go_package="Mini_Product_Ordering_Service/OrderingService";
+
+message CartItem{
+  string userID = 1;
+  string productID = 2;
+  int32 qty = 3;
+  int64 total = 4;
+}
+
+message UserID{
+  string userID =1;
+}
+
+message Cart{
+  string userID = 1;
+  repeated CartItem Item = 2;
+  int64 total =3;
+}
+
+message Pagination{
+  int32 page =1;
+  int32 recordPerPage = 2;
+}
+
+message TransactionID{
+  string id =1;
+}
+
+message Rating{
+  string userid =1;
+  string transactionId = 2;
+  string productId = 3;
+  double rating = 4;
+  string desc = 5;
+}
+
+message DetailTransaction{
+  string productId = 1;
+  int32 qty =2;
+  double rating = 3;
+  string desc = 4;
+  int64 total =5;
+}
+
+message Transaction{
+  string transactionId = 1;
+  string userId = 2;
+  int64 total =3;
+  int64 createAt =4;
+  repeated DetailTransaction detail =5;
+}
+
+
+message UserPurchase{
+  string userID = 1;
+  Pagination pagination = 2;
+}
+
+
+service CartService{
+  rpc AddCartItem(CartItem) returns(google.protobuf.Empty);
+  rpc RemoveCartItem(CartItem) returns(google.protobuf.Empty);
+  rpc GetCart(UserID) returns(Cart);
+  rpc EmptyCart(UserID) returns(google.protobuf.Empty);
+}
+
+service Purchase{
+  rpc PurchaseCart(UserID) returns(TransactionID);
+
+  rpc PurchaseHistory(UserPurchase) returns(stream Transaction);
+  rpc DetailTransaction(TransactionID) returns(Transaction);
+
+  rpc AddRating(Rating) returns(google.protobuf.Empty);
+
+}

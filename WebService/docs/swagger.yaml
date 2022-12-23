@@ -1,0 +1,694 @@
+definitions:
+  models.AccountVerificationData:
+    properties:
+      email:
+        type: string
+      token:
+        type: string
+    required:
+    - token
+    type: object
+  models.CartItemSend:
+    properties:
+      productID:
+        type: string
+      qty:
+        type: integer
+    type: object
+  models.Product:
+    properties:
+      category:
+        example:
+        - buku
+        - alat tulis
+        - keren
+        - sekolah
+        items:
+          type: string
+        type: array
+      desc:
+        example: Ini Buku Ajaib
+        type: string
+      name:
+        example: Buku
+        type: string
+      price:
+        example: 2000
+        type: integer
+      stock:
+        example: 5000
+        type: integer
+    type: object
+  models.ProductArr:
+    properties:
+      category:
+        example:
+        - buku
+        - alat tulis
+        - keren
+        - sekolah
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+    type: object
+  models.ProductRating:
+    properties:
+      desc:
+        type: string
+      product_id:
+        type: string
+      rating:
+        type: integer
+      transaction_id:
+        type: string
+    type: object
+  models.ProductStock:
+    properties:
+      id:
+        type: string
+      stock:
+        type: integer
+    type: object
+  models.RegisterData:
+    properties:
+      about:
+        type: string
+      birthdate:
+        type: integer
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phoneNumber:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.SearchProduct:
+    properties:
+      category:
+        type: string
+      keyword:
+        minLength: 3
+        type: string
+      order:
+        type: string
+      priceHigh:
+        type: integer
+      priceLow:
+        type: integer
+      rating:
+        type: number
+      sortBy:
+        type: string
+    type: object
+  models.UpdateModel:
+    properties:
+      about:
+        type: string
+      birthdate:
+        type: integer
+      id:
+        type: string
+      phoneNumber:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UpdateProduct:
+    properties:
+      category:
+        example:
+        - buku
+        - alat tulis
+        - keren
+        - sekolah
+        items:
+          type: string
+        type: array
+      desc:
+        example: Ini Buku Ajaib
+        type: string
+      id:
+        example: "9232131"
+        type: string
+      image:
+        items:
+          type: string
+        type: array
+      name:
+        example: Buku
+        type: string
+      price:
+        example: 2000
+        type: integer
+      stock:
+        example: 5000
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: A Mini Product Ordering Service API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Gin Mini Product Ordering Service
+  version: "1.0"
+paths:
+  /Auth/login:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Login Form
+      parameters:
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Login Form
+      tags:
+      - Auth
+  /Auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register Form
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterData'
+      produces:
+      - application/json
+      responses: {}
+      summary: Register Form
+      tags:
+      - Auth
+  /Cart/{uID}:
+    get:
+      consumes:
+      - application/json
+      description: Get All Product from Cart
+      parameters:
+      - description: 'Get All Product from Cart '
+        in: path
+        name: uID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Product from Cart
+      tags:
+      - Cart
+  /Cart/AddItem:
+    post:
+      consumes:
+      - application/json
+      description: Add Product to Cart
+      parameters:
+      - description: 'Add Product to Cart '
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.CartItemSend'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add Product to Cart
+      tags:
+      - Cart
+  /Cart/EmptyCart/{uID}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove All Product from Cart
+      parameters:
+      - description: 'Remove All Product from Cart '
+        in: path
+        name: uID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Remove All Product from Cart
+      tags:
+      - Cart
+  /Cart/RemoveItem/{pID}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove Product from Cart
+      parameters:
+      - description: 'Remove Product from Cart '
+        in: path
+        name: pID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Remove Product from Cart
+      tags:
+      - Cart
+  /Product/{pid}:
+    get:
+      description: Detail Product
+      parameters:
+      - description: Get Detail Product
+        in: path
+        name: pid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Detail Product
+      tags:
+      - Product
+  /Product/AddCategory:
+    post:
+      consumes:
+      - application/json
+      description: Add Category Product
+      parameters:
+      - description: Add Category Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductArr'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add Category Product
+      tags:
+      - Product Management
+  /Product/AddImage:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Product Image Form
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Product Image Form
+      tags:
+      - Product Management
+  /Product/AddProduct:
+    post:
+      consumes:
+      - application/json
+      description: Add Product
+      parameters:
+      - description: 'Add Product '
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add Product
+      tags:
+      - Product Management
+  /Product/AddStock:
+    post:
+      consumes:
+      - application/json
+      description: Add Stock Product
+      parameters:
+      - description: Add Stock Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductStock'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add Stock Product
+      tags:
+      - Product Management
+  /Product/Delete/{pid}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product
+      parameters:
+      - description: Delete Product by ID
+        in: path
+        name: pid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Product
+      tags:
+      - Product Management
+  /Product/RemoveCategory:
+    post:
+      consumes:
+      - application/json
+      description: Remove Category Product
+      parameters:
+      - description: Remove Category Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductArr'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Remove Category Product
+      tags:
+      - Product Management
+  /Product/Search:
+    post:
+      consumes:
+      - application/json
+      description: Search Product
+      parameters:
+      - description: page number
+        format: number
+        in: query
+        name: page
+        type: integer
+      - description: data per page
+        format: number
+        in: query
+        name: recordPerPage
+        type: integer
+      - description: 'Search Product '
+        in: body
+        name: product
+        schema:
+          $ref: '#/definitions/models.SearchProduct'
+      produces:
+      - application/json
+      responses: {}
+      summary: Search Product
+      tags:
+      - Product
+  /Product/UpdateProduct:
+    patch:
+      consumes:
+      - application/json
+      description: Add Product
+      parameters:
+      - description: Update Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateProduct'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add Product
+      tags:
+      - Product Management
+  /Transaction/{tID}:
+    get:
+      consumes:
+      - application/json
+      description: Detai Transaction
+      parameters:
+      - description: Detai Transaction
+        in: path
+        name: tID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Detai Transaction
+      tags:
+      - Transaction
+  /Transaction/All:
+    get:
+      description: Show  All User Transactions
+      parameters:
+      - description: page number
+        format: number
+        in: query
+        name: page
+        type: integer
+      - description: data per page
+        format: number
+        in: query
+        name: recordPerPage
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Show  All User Transactions
+      tags:
+      - Transaction
+  /Transaction/Purchase/{uID}:
+    post:
+      consumes:
+      - application/json
+      description: Purchase All Product from Cart
+      parameters:
+      - description: 'Purchase All Product from Cart '
+        in: path
+        name: uID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Purchase All Product from Cart
+      tags:
+      - Transaction
+  /Transaction/Rating:
+    post:
+      consumes:
+      - application/json
+      description: Add Product Rating
+      parameters:
+      - description: Add Product Rating
+        in: body
+        name: rating
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductRating'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Add Product Rating
+      tags:
+      - Transaction
+  /User/delete/{uid}:
+    delete:
+      description: Delete Account
+      parameters:
+      - description: Delete Account by Email
+        in: path
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Account
+      tags:
+      - User
+  /User/image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Post Form
+      parameters:
+      - description: id
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Image Form
+      tags:
+      - User
+  /User/profile:
+    get:
+      description: Show User Form
+      parameters:
+      - description: Show User by ID
+        in: query
+        name: uid
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Show User Form
+      tags:
+      - User
+  /User/profile/all:
+    get:
+      description: Show User
+      parameters:
+      - description: page number
+        format: number
+        in: query
+        name: page
+        type: integer
+      - description: data per page
+        format: number
+        in: query
+        name: recordPerPage
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Show User
+      tags:
+      - User
+  /User/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update Account
+      parameters:
+      - description: Update User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateModel'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Update Account
+      tags:
+      - User
+  /User/verification:
+    post:
+      consumes:
+      - application/json
+      description: Account Verification Form
+      parameters:
+      - description: Account Verification User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.AccountVerificationData'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Account Verification Form
+      tags:
+      - User
+  /User/verification/{email}:
+    get:
+      description: Account Verification User
+      parameters:
+      - description: Account Verification User by Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Account Verification User
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Token
+    type: apiKey
+swagger: "2.0"
